@@ -10,6 +10,14 @@ A simple backend and frontend application for managing startup onboarding. This 
 - Filter startups by status
 - View all accepted startups
 
+## Deployed project
+
+- [**App**](https://kaiku-challenge.onrender.com/)
+- [**Swagger UI**](https://kaiku-challenge.onrender.com/docs)
+- [**ReDoc**](https://kaiku-challenge.onrender.com/redoc)
+
+**Delays of more than 50 sec are possible because this is free hosting**
+
 ## Architecture
 
 The application uses a Python backend with FastAPI and a simple frontend with HTML, CSS, and JavaScript:
@@ -17,6 +25,8 @@ The application uses a Python backend with FastAPI and a simple frontend with HT
 - **Backend**: Python with FastAPI
 - **Frontend**: HTML, Jinja2 templates, CSS, JavaScript
 - **Data Storage**: In-memory database using Python objects
+
+![System Architecture](https://github.com/user-attachments/assets/f775f22f-f329-411c-800e-01b0cb9a422a)
 
 ## Project Structure
 
