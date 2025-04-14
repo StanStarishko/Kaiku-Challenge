@@ -43,7 +43,7 @@ startup_onboarding/
 │   └── js/
 │   │  └── app.js                   # JavaScript for frontend
 │   ├── data/
-│   │   └── challenge3_data.json    # CSS styles
+│      └── challenge3_data.json    # initial data
 └── templates/                      # HTML templates
     ├── index.html                  # Main dashboard
     ├── create.html                 # Startup creation form
