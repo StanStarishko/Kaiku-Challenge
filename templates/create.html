@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New Startup | Startup Onboarding</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Create New Startup</h1>
+            <nav>
+                <a href="/" class="nav-link">Back to Dashboard</a>
+            </nav>
+        </header>
+
+        <div class="form-container">
+            <form action="/create" method="post" class="startup-form">
+                <div class="form-group">
+                    <label for="name">Startup Name *</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="founded_year">Founded Year</label>
+                    <input type="number" id="founded_year" name="founded_year" min="1900" max="2023">
+                </div>
+                
+                <div class="form-group">
+                    <label for="industry">Industry</label>
+                    <select id="industry" name="industry">
+                        <option value="">Select Industry</option>
+                        <option value="fintech">FinTech</option>
+                        <option value="healthtech">HealthTech</option>
+                        <option value="medtech">MedTech</option>
+                        <option value="edtech">EdTech</option>
+                        <option value="consumer">Consumer</option>
+                        <option value="enterprise">Enterprise</option>
+                        <option value="hardware">Hardware</option>
+                        <option value="saas">SaaS</option>
+                        <option value="marketplace">Marketplace</option>
+                        <option value="ecommerce">E-commerce</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="stage">Company Stage</label>
+                    <select id="stage" name="stage">
+                        <option value="">Select Stage</option>
+                        <option value="idea">Idea</option>
+                        <option value="mvp">MVP</option>
+                        <option value="pre-seed">Pre-seed</option>
+                        <option value="seed">Seed</option>
+                        <option value="series a">Series A</option>
+                        <option value="series b">Series B</option>
+                        <option value="revenue generation">Revenue Generation</option>
+                        <option value="profitable">Profitable</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="one_liner">One-Liner Description</label>
+                    <textarea id="one_liner" name="one_liner" rows="3" maxlength="200" placeholder="Brief description of what your startup does (max 200 chars)"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="website">Website</label>
+                    <input type="url" id="website" name="website" placeholder="https://example.com">
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Create Startup</button>
+                    <a href="/" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script src="{{ url_for('static', path='/js/app.js') }}"></script>
+</body>
+</html>

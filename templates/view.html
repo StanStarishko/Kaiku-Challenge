@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ startup.name }} | Startup Onboarding</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Startup Details</h1>
+            <nav>
+                <a href="/" class="nav-link">Back to Dashboard</a>
+            </nav>
+        </header>
+
+        <div class="detail-container">
+            <div class="detail-header">
+                {% if startup.logoUrl %}
+                    <div class="detail-logo" style="background-image: url('{{ startup.logoUrl }}')"></div>
+                {% else %}
+                    <div class="detail-logo no-logo">{{ startup.name[0] }}</div>
+                {% endif %}
+                
+                <div class="detail-title">
+                    <h2>{{ startup.name }}</h2>
+                    <p class="founded">Founded: {{ startup.foundedYear if startup.foundedYear else "Unknown" }}</p>
+                    {% if startup.website %}
+                        <a href="{{ startup.website }}" target="_blank" class="website-link">{{ startup.website }}</a>
+                    {% endif %}
+                </div>
+                
+                <div class="status-badge status-{{ startup.status }}">
+                    {{ startup.status.capitalize() }}
+                </div>
+            </div>
+            
+            <div class="detail-section">
+                <h3>Basic Information</h3>
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <span class="detail-label">Industry</span>
+                        <span class="detail-value">{{ startup.industry if startup.industry else "Not specified" }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Stage</span>
+                        <span class="detail-value">{{ startup.stage if startup.stage else "Not specified" }}</span>
+                    </div>
+                    {% if startup.incorporatedLocation %}
+                    <div class="detail-item">
+                        <span class="detail-label">Incorporated In</span>
+                        <span class="detail-value">{{ startup.incorporatedLocation }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="detail-section">
+                <h3>Description</h3>
+                <p class="detail-description">{{ startup.oneLiner if startup.oneLiner else "No description provided." }}</p>
+            </div>
+            
+            {% if startup.productHighlights %}
+            <div class="detail-section">
+                <h3>Product Highlights</h3>
+                <div class="highlights-container">
+                    {% for highlight in startup.productHighlights %}
+                        <span class="tag">{{ highlight }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            
+            {% if startup.members and startup.members|length > 0 %}
+            <div class="detail-section">
+                <h3>Team Members</h3>
+                <div class="members-container">
+                    {% for member in startup.members %}
+                        <div class="member-card">
+                            {% if member.pictureUrl %}
+                                <div class="member-avatar" style="background-image: url('{{ member.pictureUrl }}')"></div>
+                            {% else %}
+                                <div class="member-avatar no-image">{{ member.firstName[0] }}{{ member.lastName[0] }}</div>
+                            {% endif %}
+                            <h4>{{ member.firstName }} {{ member.lastName }}</h4>
+                            <p class="member-role">{{ member.role }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            
+            {% if startup.fundraiseStage or startup.targetRaise %}
+            <div class="detail-section">
+                <h3>Fundraising Information</h3>
+                <div class="detail-grid">
+                    {% if startup.fundraiseStage %}
+                    <div class="detail-item">
+                        <span class="detail-label">Fundraise Stage</span>
+                        <span class="detail-value">{{ startup.fundraiseStage }}</span>
+                    </div>
+                    {% endif %}
+                    {% if startup.targetRaise %}
+                    <div class="detail-item">
+                        <span class="detail-label">Target Raise</span>
+                        <span class="detail-value">${{ "{:,.2f}".format(startup.targetRaise) }}</span>
+                    </div>
+                    {% endif %}
+                    {% if startup.targetEquity %}
+                    <div class="detail-item">
+                        <span class="detail-label">Target Equity</span>
+                        <span class="detail-value">{{ startup.targetEquity }}%</span>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                {% if startup.raises and startup.raises|length > 0 %}
+                <div class="raises-container">
+                    <h4>Previous Raises</h4>
+                    <table class="raises-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for raise in startup.raises %}
+                                <tr>
+                                    <td>{{ raise.id }}</td>
+                                    <td>${{ "{:,.2f}".format(raise.amountRaised) }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+            
+            <div class="action-container">
+                <h3>Update Status</h3>
+                <div class="status-actions">
+                    <form action="/update/{{ startup.id }}" method="post" class="inline-form">
+                        <input type="hidden" name="status" value="accepted">
+                        <button type="submit" class="btn btn-accept" {% if startup.status == "accepted" %}disabled{% endif %}>
+                            {% if startup.status == "accepted" %}Already Accepted{% else %}Accept Startup{% endif %}
+                        </button>
+                    </form>
+                    
+                    <form action="/update/{{ startup.id }}" method="post" class="inline-form">
+                        <input type="hidden" name="status" value="rejected">
+                        <button type="submit" class="btn btn-reject" {% if startup.status == "rejected" %}disabled{% endif %}>
+                            {% if startup.status == "rejected" %}Already Rejected{% else %}Reject Startup{% endif %}
+                        </button>
+                    </form>
+                    
+                    {% if startup.status != "pending" %}
+                    <form action="/update/{{ startup.id }}" method="post" class="inline-form">
+                        <input type="hidden" name="status" value="pending">
+                        <button type="submit" class="btn btn-reset">Reset to Pending</button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="{{ url_for('static', path='/js/app.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Startup Onboarding Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Startup Onboarding Dashboard</h1>
+            <nav>
+                <a href="/" class="nav-link">Dashboard</a>
+                <a href="/create" class="nav-link btn-primary">Add New Startup</a>
+            </nav>
+        </header>
+
+        <div class="stats-container">
+            <div class="stat-card">
+                <h3>Pending</h3>
+                <p class="stat-number">{{ pending_count }}</p>
+            </div>
+            <div class="stat-card">
+                <h3>Accepted</h3>
+                <p class="stat-number">{{ accepted_count }}</p>
+            </div>
+            <div class="stat-card">
+                <h3>Rejected</h3>
+                <p class="stat-number">{{ rejected_count }}</p>
+            </div>
+        </div>
+
+        <div class="filter-container">
+            <h2>Startups</h2>
+            <div class="filter-options">
+                <a href="/filter?status=all" class="filter-link {% if current_filter == 'all' %}active{% endif %}">All</a>
+                <a href="/filter?status=pending" class="filter-link {% if current_filter == 'pending' %}active{% endif %}">Pending</a>
+                <a href="/filter?status=accepted" class="filter-link {% if current_filter == 'accepted' %}active{% endif %}">Accepted</a>
+                <a href="/filter?status=rejected" class="filter-link {% if current_filter == 'rejected' %}active{% endif %}">Rejected</a>
+            </div>
+        </div>
+
+        <div class="startup-list">
+            {% if startups %}
+                {% for startup in startups %}
+                    <div class="startup-card">
+                        <div class="card-header">
+                            {% if startup.logoUrl %}
+                                <div class="logo" style="background-image: url('{{ startup.logoUrl }}')"></div>
+                            {% else %}
+                                <div class="logo no-logo">{{ startup.name[0] }}</div>
+                            {% endif %}
+                            
+                            <div class="basic-info">
+                                <h3>{{ startup.name }}</h3>
+                                <p class="industry">{{ startup.industry if startup.industry else "Unspecified Industry" }}</p>
+                                <p class="founded">Founded: {{ startup.foundedYear if startup.foundedYear else "Unknown" }}</p>
+                            </div>
+                            
+                            <div class="status status-{{ startup.status.value }}">
+                                {{ startup.status.value }}
+                            </div>
+                        </div>
+                        
+                        <div class="card-body">
+                            <p class="one-liner">{{ startup.oneLiner if startup.oneLiner else "No description provided." }}</p>
+                            
+                            {% if startup.productHighlights %}
+                                <div class="highlights">
+                                    {% for highlight in startup.productHighlights[:3] %}
+                                        <span class="tag">{{ highlight }}</span>
+                                    {% endfor %}
+                                    {% if startup.productHighlights|length > 3 %}
+                                        <span class="tag more">+{{ startup.productHighlights|length - 3 }}</span>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="card-footer">
+                            <a href="/view/{{ startup.id }}" class="btn">View Details</a>
+                            
+                            {% if startup.status == "pending" %}
+                                <div class="action-buttons">
+                                    <form action="/update/{{ startup.id }}" method="post" class="inline-form">
+                                        <input type="hidden" name="status" value="accepted">
+                                        <button type="submit" class="btn btn-accept">Accept</button>
+                                    </form>
+                                    <form action="/update/{{ startup.id }}" method="post" class="inline-form">
+                                        <input type="hidden" name="status" value="rejected">
+                                        <button type="submit" class="btn btn-reject">Reject</button>
+                                    </form>
+                                </div>
+                            {% else %}
+                                <form action="/update/{{ startup.id }}" method="post" class="inline-form">
+                                    <input type="hidden" name="status" value="pending">
+                                    <button type="submit" class="btn btn-reset">Reset Status</button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state">
+                    <p>No startups found. Create one to get started!</p>
+                    <a href="/create" class="btn btn-primary">Add New Startup</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <script src="{{ url_for('static', path='/js/app.js') }}"></script>
+</body>
+</html>
